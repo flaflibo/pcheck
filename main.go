@@ -16,6 +16,7 @@ var value = "#99@123"
 var erroMsg []string
 var portMap map[int]bool
 var wg sync.WaitGroup
+var mu sync.Mutex
 
 func startUdpServer(port int) {
 	addr, err := net.ResolveUDPAddr("udp", ":"+strconv.Itoa(port))
@@ -39,7 +40,9 @@ func startUdpServer(port int) {
 			continue
 		}
 
+		mu.Lock()
 		portMap[addr.Port] = true
+		mu.Unlock()
 		wg.Done()
 		break
 
